@@ -1,0 +1,901 @@
+/* richkit — override any --richkit-* variable on .richkit to theme the editor. */
+
+.richkit {
+  --richkit-bg: #ffffff;
+  --richkit-fg: #1f2328;
+  --richkit-muted: #6e7781;
+  --richkit-border: #d8dee4;
+  --richkit-toolbar-bg: #f8f9fb;
+  --richkit-hover: #e9edf1;
+  --richkit-active-bg: #dfe9ff;
+  --richkit-accent: #2563eb;
+  --richkit-danger: #cf222e;
+  --richkit-code-bg: #f0f2f5;
+  --richkit-shadow: 0 1px 2px rgb(16 24 40 / 0.06), 0 10px 28px rgb(16 24 40 / 0.14);
+  --richkit-radius: 10px;
+  --richkit-font: "Trebuchet MS", "Lucida Grande", "Lucida Sans Unicode", Tahoma, sans-serif;
+  --richkit-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --richkit-min-height: 140px;
+  --richkit-max-height: none;
+  /** Distance from the top of the page at which the toolbar sticks. */
+  --richkit-sticky-top: 0px;
+
+  position: relative;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--richkit-border);
+  border-radius: var(--richkit-radius);
+  background: var(--richkit-bg);
+  color: var(--richkit-fg);
+  font-family: var(--richkit-font);
+  font-size: 15px;
+  line-height: 1.6;
+  text-align: left;
+  transition:
+    border-color 0.15s,
+    box-shadow 0.15s;
+}
+
+.richkit[data-theme="dark"] {
+  --richkit-bg: #0f1318;
+  --richkit-fg: #e6edf3;
+  --richkit-muted: #8b949e;
+  --richkit-border: #2d333b;
+  --richkit-toolbar-bg: #161b22;
+  --richkit-hover: #262c36;
+  --richkit-active-bg: #1b3160;
+  --richkit-accent: #6ea8fe;
+  --richkit-danger: #ff7b72;
+  --richkit-code-bg: #1c2128;
+  --richkit-shadow: 0 1px 2px rgb(0 0 0 / 0.4), 0 10px 28px rgb(0 0 0 / 0.5);
+  color-scheme: dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  .richkit[data-theme="auto"] {
+    --richkit-bg: #0f1318;
+    --richkit-fg: #e6edf3;
+    --richkit-muted: #8b949e;
+    --richkit-border: #2d333b;
+    --richkit-toolbar-bg: #161b22;
+    --richkit-hover: #262c36;
+    --richkit-active-bg: #1b3160;
+    --richkit-accent: #6ea8fe;
+    --richkit-danger: #ff7b72;
+    --richkit-code-bg: #1c2128;
+    --richkit-shadow: 0 1px 2px rgb(0 0 0 / 0.4), 0 10px 28px rgb(0 0 0 / 0.5);
+    color-scheme: dark;
+  }
+}
+
+.richkit *,
+.richkit *::before,
+.richkit *::after {
+  box-sizing: border-box;
+}
+
+.richkit:focus-within {
+  border-color: var(--richkit-accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--richkit-accent) 20%, transparent);
+}
+
+.richkit[data-fullscreen] {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+/* ---------- Toolbar ---------- */
+
+.richkit-head {
+  position: sticky;
+  top: var(--richkit-sticky-top);
+  z-index: 10;
+  border-bottom: 1px solid var(--richkit-border);
+  border-radius: calc(var(--richkit-radius) - 1px) calc(var(--richkit-radius) - 1px) 0 0;
+  background: var(--richkit-toolbar-bg);
+}
+
+.richkit-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 2px;
+  padding: 6px 8px;
+}
+
+.richkit[data-fullscreen] .richkit-head {
+  border-radius: 0;
+}
+
+.richkit[data-fullscreen] .richkit-toolbar {
+  justify-content: center;
+}
+
+.richkit-item,
+.richkit-pop {
+  position: relative;
+  display: inline-flex;
+}
+
+.richkit-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  min-width: 30px;
+  height: 30px;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: 13px;
+  line-height: 1;
+  cursor: pointer;
+  transition:
+    background-color 0.12s,
+    color 0.12s;
+}
+
+.richkit-btn[data-wide] {
+  padding: 0 8px;
+}
+
+.richkit-btn[aria-haspopup][data-wide] {
+  justify-content: space-between;
+  min-width: 108px;
+}
+
+.richkit-btn[aria-label="Ask AI"] {
+  color: var(--richkit-accent);
+  font-weight: 700;
+}
+
+.richkit-btn-text {
+  white-space: nowrap;
+}
+
+.richkit-btn:hover:not(:disabled) {
+  background: var(--richkit-hover);
+}
+
+.richkit-btn[data-active] {
+  background: var(--richkit-active-bg);
+  color: var(--richkit-accent);
+}
+
+.richkit-btn:disabled {
+  opacity: 0.38;
+  cursor: not-allowed;
+}
+
+.richkit-btn:focus-visible,
+.richkit-input:focus-visible,
+.richkit-action:focus-visible,
+.richkit-menu-item:focus-visible,
+.richkit-swatch:focus-visible,
+.richkit-grid-cell:focus-visible {
+  outline: 2px solid var(--richkit-accent);
+  outline-offset: 1px;
+}
+
+/* Tooltip */
+.richkit-btn[data-tip]::after {
+  content: attr(data-tip);
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 50%;
+  z-index: 40;
+  padding: 5px 8px;
+  border-radius: 6px;
+  background: var(--richkit-fg);
+  color: var(--richkit-bg);
+  font-size: 11.5px;
+  font-weight: 500;
+  line-height: 1.2;
+  white-space: nowrap;
+  opacity: 0;
+  transform: translate(-50%, -2px);
+  pointer-events: none;
+  transition:
+    opacity 0.12s,
+    transform 0.12s;
+}
+
+.richkit-btn[data-tip]:hover:not(:disabled)::after,
+.richkit-btn[data-tip]:focus-visible::after {
+  opacity: 1;
+  transform: translate(-50%, 0);
+  transition-delay: 0.45s;
+}
+
+.richkit-sep {
+  width: 1px;
+  height: 18px;
+  margin: 0 5px;
+  background: var(--richkit-border);
+}
+
+/* Colour buttons: icon with a bar showing the current colour */
+.richkit-ink {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+}
+
+.richkit-ink svg {
+  width: 14px;
+  height: 14px;
+}
+
+.richkit-ink-bar {
+  width: 14px;
+  height: 3px;
+  border-radius: 2px;
+}
+
+/* ---------- Popover panels ---------- */
+
+.richkit-panel {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  z-index: 30;
+  padding: 6px;
+  border: 1px solid var(--richkit-border);
+  border-radius: 10px;
+  background: var(--richkit-bg);
+  box-shadow: var(--richkit-shadow);
+  font-size: 13px;
+  animation: richkit-pop-in 0.12s ease-out;
+}
+
+.richkit-panel[data-align="end"] {
+  right: 0;
+  left: auto;
+}
+
+@keyframes richkit-pop-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+}
+
+.richkit-menu {
+  display: flex;
+  flex-direction: column;
+  min-width: 176px;
+}
+
+.richkit-menu-item {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 6px 10px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: 13px;
+  line-height: 1.35;
+  text-align: left;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.richkit-menu-item:hover {
+  background: var(--richkit-hover);
+}
+
+.richkit-menu-item[data-active] {
+  background: var(--richkit-active-bg);
+  color: var(--richkit-accent);
+}
+
+.richkit-menu-item[data-danger] {
+  color: var(--richkit-danger);
+}
+
+.richkit-menu-item [data-level="1"] {
+  font-size: 19px;
+  font-weight: 650;
+}
+
+.richkit-menu-item [data-level="2"] {
+  font-size: 16.5px;
+  font-weight: 650;
+}
+
+.richkit-menu-item [data-level="3"] {
+  font-size: 14.5px;
+  font-weight: 650;
+}
+
+.richkit-menu-sep {
+  height: 1px;
+  margin: 4px 0;
+  background: var(--richkit-border);
+}
+
+.richkit-row {
+  display: flex;
+  gap: 2px;
+}
+
+.richkit-swatches {
+  display: grid;
+  grid-template-columns: repeat(5, 24px);
+  gap: 6px;
+  padding: 2px;
+}
+
+.richkit-swatch {
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 1px solid rgb(0 0 0 / 0.12);
+  border-radius: 50%;
+  cursor: pointer;
+  transition: transform 0.1s;
+}
+
+.richkit-swatch:hover {
+  transform: scale(1.12);
+}
+
+.richkit-swatch[data-active] {
+  box-shadow:
+    0 0 0 2px var(--richkit-bg),
+    0 0 0 4px var(--richkit-accent);
+}
+
+.richkit-swatch-reset {
+  grid-column: 1 / -1;
+  justify-content: center;
+  margin-top: 2px;
+  color: var(--richkit-muted);
+}
+
+.richkit-form {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 250px;
+  max-width: 70vw;
+  padding: 2px;
+}
+
+.richkit-form-row {
+  display: flex;
+  gap: 6px;
+}
+
+.richkit-input {
+  width: 100%;
+  height: 32px;
+  padding: 0 10px;
+  border: 1px solid var(--richkit-border);
+  border-radius: 6px;
+  background: var(--richkit-bg);
+  color: inherit;
+  font: inherit;
+  font-size: 13px;
+}
+
+.richkit-input::placeholder {
+  color: var(--richkit-muted);
+}
+
+.richkit-action {
+  height: 30px;
+  padding: 0 12px;
+  border: 1px solid var(--richkit-border);
+  border-radius: 6px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.richkit-action:hover:not(:disabled) {
+  background: var(--richkit-hover);
+}
+
+.richkit-action[data-primary] {
+  border-color: var(--richkit-accent);
+  background: var(--richkit-accent);
+  color: var(--richkit-bg);
+}
+
+.richkit-action[data-primary]:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--richkit-accent) 88%, var(--richkit-fg));
+}
+
+.richkit-action:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.richkit-grid-wrap {
+  padding: 4px;
+}
+
+.richkit-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 18px);
+  gap: 3px;
+}
+
+.richkit-grid-cell {
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  border: 1px solid var(--richkit-border);
+  border-radius: 3px;
+  background: transparent;
+  cursor: pointer;
+}
+
+.richkit-grid-cell[data-on] {
+  border-color: var(--richkit-accent);
+  background: var(--richkit-active-bg);
+}
+
+.richkit-grid-label {
+  margin-top: 6px;
+  color: var(--richkit-muted);
+  font-size: 12px;
+  text-align: center;
+}
+
+/* ---------- AI assistant ---------- */
+
+.richkit-ai {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 8px;
+  border-top: 1px solid var(--richkit-border);
+  background: var(--richkit-bg);
+  font-size: 13px;
+  animation: richkit-pop-in 0.12s ease-out;
+}
+
+.richkit-head > .richkit-ai:first-child {
+  border-top: 0;
+  border-radius: calc(var(--richkit-radius) - 1px) calc(var(--richkit-radius) - 1px) 0 0;
+}
+
+.richkit-ai-bar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.richkit-ai-mark {
+  display: inline-flex;
+  flex: none;
+  margin: 0 2px 0 4px;
+  color: var(--richkit-accent);
+}
+
+.richkit-ai-input {
+  flex: 1;
+  min-width: 0;
+  height: 32px;
+  padding: 0 10px;
+  border: 1px solid var(--richkit-border);
+  border-radius: 6px;
+  background: var(--richkit-bg);
+  color: inherit;
+  font: inherit;
+  font-size: 14px;
+}
+
+.richkit-ai-input::placeholder {
+  color: var(--richkit-muted);
+}
+
+.richkit-ai-input:focus-visible,
+.richkit-chip:focus-visible {
+  outline: 2px solid var(--richkit-accent);
+  outline-offset: 1px;
+}
+
+.richkit-ai-chips,
+.richkit-ai-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.richkit-ai-scope {
+  margin: 0 2px 0 4px;
+  color: var(--richkit-muted);
+  font-size: 12px;
+}
+
+.richkit-chip {
+  height: 28px;
+  padding: 0 10px;
+  border: 1px solid var(--richkit-border);
+  border-radius: 999px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: 12.5px;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.richkit-chip:hover {
+  border-color: var(--richkit-accent);
+  background: var(--richkit-active-bg);
+  color: var(--richkit-accent);
+}
+
+.richkit-ai-note {
+  margin: 0;
+  padding: 2px 6px;
+  color: var(--richkit-muted);
+}
+
+.richkit-ai-note[data-error] {
+  color: var(--richkit-danger);
+}
+
+.richkit-ai-preview.richkit-content {
+  min-height: 0;
+  max-height: 240px;
+  padding: 10px 12px;
+  border: 1px dashed color-mix(in srgb, var(--richkit-accent) 55%, var(--richkit-border));
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--richkit-accent) 5%, var(--richkit-bg));
+  font-size: 14px;
+  overflow-y: auto;
+}
+
+.richkit-ai-preview[aria-busy="true"] > :last-child::after {
+  content: "";
+  display: inline-block;
+  width: 7px;
+  height: 1em;
+  margin-left: 2px;
+  background: var(--richkit-accent);
+  vertical-align: text-bottom;
+  animation: richkit-blink 1s steps(2, start) infinite;
+}
+
+/* The content the assistant is working on, kept visible while focus is in the panel. */
+.richkit-ai-range {
+  border-radius: 2px;
+  background: color-mix(in srgb, var(--richkit-accent) 22%, transparent);
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+
+.richkit-ai-caret {
+  display: inline-block;
+  width: 2px;
+  height: 1.15em;
+  margin: 0 -1px;
+  background: var(--richkit-accent);
+  vertical-align: text-bottom;
+  animation: richkit-blink 1s steps(2, start) infinite;
+}
+
+@keyframes richkit-blink {
+  to {
+    visibility: hidden;
+  }
+}
+
+/* ---------- Bubble menu ---------- */
+
+.richkit-bubble {
+  /* Above the content, below the toolbar (10) so open panels cover it. */
+  z-index: 5;
+  display: flex;
+  gap: 2px;
+  padding: 4px;
+  border: 1px solid var(--richkit-border);
+  border-radius: 10px;
+  background: var(--richkit-bg);
+  box-shadow: var(--richkit-shadow);
+}
+
+/* ---------- Footer ---------- */
+
+.richkit-footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 6px 12px;
+  border-top: 1px solid var(--richkit-border);
+  border-radius: 0 0 calc(var(--richkit-radius) - 1px) calc(var(--richkit-radius) - 1px);
+  background: var(--richkit-toolbar-bg);
+  color: var(--richkit-muted);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+
+.richkit-count[data-full] {
+  color: var(--richkit-danger);
+  font-weight: 600;
+}
+
+/* ---------- Content ---------- */
+
+.richkit-body {
+  flex: 1;
+  min-height: var(--richkit-min-height);
+  max-height: var(--richkit-max-height);
+  overflow-y: auto;
+  cursor: text;
+}
+
+.richkit[data-fullscreen] .richkit-body {
+  max-height: none;
+}
+
+.richkit[data-readonly] .richkit-body {
+  cursor: default;
+}
+
+.richkit-content {
+  min-height: var(--richkit-min-height);
+  padding: 14px 18px;
+  outline: none;
+  overflow-wrap: anywhere;
+}
+
+.richkit[data-fullscreen] .richkit-content {
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 32px 24px 64px;
+}
+
+.richkit-content > :first-child {
+  margin-top: 0;
+}
+
+.richkit-content > :last-child {
+  margin-bottom: 0;
+}
+
+.richkit-content ::selection {
+  background: color-mix(in srgb, var(--richkit-accent) 28%, transparent);
+}
+
+.richkit-content p {
+  margin: 0 0 0.75em;
+}
+
+.richkit-content h1,
+.richkit-content h2,
+.richkit-content h3 {
+  margin: 1.2em 0 0.5em;
+  line-height: 1.25;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+}
+
+.richkit-content h1 {
+  font-size: 1.8em;
+}
+
+.richkit-content h2 {
+  font-size: 1.4em;
+}
+
+.richkit-content h3 {
+  font-size: 1.17em;
+}
+
+.richkit-content ul,
+.richkit-content ol {
+  margin: 0 0 0.75em;
+  padding-left: 1.6em;
+}
+
+.richkit-content li > p {
+  margin: 0;
+}
+
+.richkit-content li::marker {
+  color: var(--richkit-muted);
+}
+
+/* Task list */
+.richkit-content ul[data-type="taskList"] {
+  padding-left: 0.15em;
+  list-style: none;
+}
+
+.richkit-content ul[data-type="taskList"] > li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.55em;
+}
+
+.richkit-content ul[data-type="taskList"] > li > label {
+  flex: none;
+  margin-top: 0.28em;
+  line-height: 1;
+  user-select: none;
+}
+
+.richkit-content ul[data-type="taskList"] > li > div {
+  flex: 1;
+  min-width: 0;
+}
+
+.richkit-content ul[data-type="taskList"] input[type="checkbox"] {
+  width: 1em;
+  height: 1em;
+  margin: 0;
+  accent-color: var(--richkit-accent);
+  cursor: pointer;
+}
+
+.richkit-content ul[data-type="taskList"] > li[data-checked="true"] > div {
+  color: var(--richkit-muted);
+  text-decoration: line-through;
+}
+
+.richkit-content blockquote {
+  margin: 0 0 0.75em;
+  padding: 0.1em 0 0.1em 1em;
+  border-left: 3px solid var(--richkit-accent);
+  color: var(--richkit-muted);
+}
+
+.richkit-content a {
+  color: var(--richkit-accent);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: pointer;
+}
+
+.richkit-content mark {
+  padding: 0.05em 0.15em;
+  border-radius: 3px;
+  background: #fef08a;
+  /* Highlights are always light, so keep dark text in every theme
+     (the extension sets an inline `color: inherit`). */
+  color: #1f2328 !important;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+
+.richkit-content code {
+  padding: 0.15em 0.4em;
+  border-radius: 4px;
+  background: var(--richkit-code-bg);
+  font-family: var(--richkit-mono);
+  font-size: 0.88em;
+}
+
+.richkit-content pre {
+  margin: 0 0 0.75em;
+  padding: 12px 14px;
+  border: 1px solid var(--richkit-border);
+  border-radius: 8px;
+  background: var(--richkit-code-bg);
+  overflow-x: auto;
+}
+
+.richkit-content pre code {
+  padding: 0;
+  background: none;
+  font-size: 0.86em;
+}
+
+.richkit-content hr {
+  margin: 1.3em 0;
+  border: 0;
+  border-top: 1px solid var(--richkit-border);
+}
+
+.richkit-content hr.ProseMirror-selectednode {
+  border-top-color: var(--richkit-accent);
+}
+
+/* Images */
+.richkit-content img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 0 0 0.75em;
+  border-radius: 8px;
+}
+
+.richkit-content img.ProseMirror-selectednode {
+  outline: 3px solid var(--richkit-accent);
+  outline-offset: 2px;
+}
+
+/* Tables */
+.richkit-content .tableWrapper {
+  margin: 0 0 0.9em;
+  overflow-x: auto;
+}
+
+.richkit-content table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  overflow: hidden;
+}
+
+.richkit-content th,
+.richkit-content td {
+  position: relative;
+  min-width: 3em;
+  padding: 6px 10px;
+  border: 1px solid var(--richkit-border);
+  vertical-align: top;
+  text-align: left;
+}
+
+.richkit-content th {
+  background: var(--richkit-toolbar-bg);
+  font-weight: 600;
+}
+
+.richkit-content th > p,
+.richkit-content td > p {
+  margin: 0;
+}
+
+.richkit-content .selectedCell::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: color-mix(in srgb, var(--richkit-accent) 16%, transparent);
+  pointer-events: none;
+}
+
+.richkit-content .column-resize-handle {
+  position: absolute;
+  top: 0;
+  right: -2px;
+  bottom: -2px;
+  width: 4px;
+  background: var(--richkit-accent);
+  pointer-events: none;
+}
+
+.richkit-content.resize-cursor {
+  cursor: col-resize;
+}
+
+.richkit-content p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  color: var(--richkit-muted);
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .richkit,
+  .richkit * {
+    animation: none !important;
+    transition: none !important;
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "name": "richkit-example-vite",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build"
+  },
+  "dependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "richkit": "file:../../richkit-0.2.0.tgz"
+  },
+  "devDependencies": {
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@vitejs/plugin-react": "latest",
+    "typescript": "^6.0.0",
+    "vite": "latest"
+  }
+}

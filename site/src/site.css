@@ -1,0 +1,738 @@
+:root {
+  --bg: #faf7f2;
+  --surface: #ffffff;
+  --sunken: #f2ede4;
+  --ink: #1d1a16;
+  --muted: #6b645b;
+  --line: #e4dccf;
+  --on-accent: #ffffff;
+  --code-bg: #1d1a16;
+  --code-ink: #f1ece4;
+  --shadow: 0 1px 2px rgb(40 30 15 / 0.05), 0 24px 60px -20px rgb(40 30 15 / 0.22);
+  --font: "Trebuchet MS", "Lucida Grande", "Lucida Sans Unicode", Tahoma, sans-serif;
+  --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+  --bg: #12110f;
+  --surface: #1a1917;
+  --sunken: #1f1d1a;
+  --ink: #f1ece4;
+  --muted: #a39b8f;
+  --line: #2f2c27;
+  --on-accent: #14110e;
+  --code-bg: #0b0a09;
+  --code-ink: #e9e3da;
+  --shadow: 0 1px 2px rgb(0 0 0 / 0.4), 0 24px 60px -20px rgb(0 0 0 / 0.7);
+  color-scheme: dark;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 72px;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font);
+  font-size: 17px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+.page {
+  --accent: #d9480f;
+  min-height: 100vh;
+  overflow-x: clip;
+}
+
+.wrap {
+  width: 100%;
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+a {
+  color: inherit;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+h1,
+h2,
+h3 {
+  margin: 0;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+p {
+  margin: 0;
+}
+
+code,
+pre {
+  font-family: var(--mono);
+}
+
+/* ---------- Nav ---------- */
+
+.nav {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  border-bottom: 1px solid var(--line);
+  background: color-mix(in srgb, var(--bg) 86%, transparent);
+  backdrop-filter: blur(10px);
+}
+
+.nav-inner {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  height: 60px;
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 19px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  text-decoration: none;
+}
+
+.brand-mark {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: var(--accent);
+  color: var(--on-accent);
+  font-size: 17px;
+  font-weight: 700;
+  transition: background-color 0.2s;
+}
+
+.nav nav {
+  display: flex;
+  gap: 22px;
+  margin-left: auto;
+  font-size: 15px;
+}
+
+.nav nav a {
+  color: var(--muted);
+  text-decoration: none;
+}
+
+.nav nav a:hover {
+  color: var(--ink);
+}
+
+.ghost {
+  height: 34px;
+  padding: 0 14px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.ghost:hover {
+  background: var(--sunken);
+}
+
+/* ---------- Hero ---------- */
+
+.hero {
+  padding: 88px 0 48px;
+}
+
+.eyebrow {
+  margin-bottom: 18px;
+  color: var(--accent);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  transition: color 0.2s;
+}
+
+h1 {
+  max-width: 14ch;
+  font-size: clamp(44px, 8vw, 88px);
+  letter-spacing: -0.035em;
+  line-height: 0.98;
+}
+
+h1 em {
+  color: var(--accent);
+  font-style: italic;
+  transition: color 0.2s;
+}
+
+.lead {
+  max-width: 58ch;
+  margin-top: 24px;
+  color: var(--muted);
+  font-size: 19px;
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px;
+  margin-top: 36px;
+}
+
+.npm-link {
+  padding: 0 6px;
+  color: var(--ink);
+  font-size: 16px;
+  font-weight: 600;
+  text-underline-offset: 4px;
+}
+
+.npm-link:hover {
+  color: var(--accent);
+}
+
+.install {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  height: 52px;
+  padding: 0 8px 0 20px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface);
+  font-size: 15px;
+}
+
+.install code::before {
+  content: "$ ";
+  color: var(--muted);
+}
+
+.copy {
+  height: 34px;
+  min-width: 68px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 8px;
+  background: var(--sunken);
+  color: var(--ink);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.copy:hover {
+  background: var(--line);
+}
+
+.cta {
+  display: inline-flex;
+  align-items: center;
+  height: 52px;
+  padding: 0 24px;
+  border-radius: 12px;
+  background: var(--accent);
+  color: var(--on-accent);
+  font-size: 16px;
+  font-weight: 700;
+  text-decoration: none;
+  transition:
+    background-color 0.2s,
+    transform 0.15s;
+}
+
+.cta:hover {
+  transform: translateY(-1px);
+}
+
+/* ---------- Demo ---------- */
+
+.demo {
+  padding: 8px 0 96px;
+}
+
+.demo-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.demo-label {
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.swatches {
+  display: flex;
+  gap: 8px;
+}
+
+.swatch {
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: transform 0.12s;
+}
+
+.swatch:hover {
+  transform: scale(1.12);
+}
+
+.swatch[aria-pressed="true"] {
+  box-shadow:
+    0 0 0 2px var(--bg),
+    0 0 0 4px var(--ink);
+}
+
+/* The page's accent drives the editor: this is the whole theming API. */
+.richkit.demo-editor {
+  --richkit-accent: var(--accent);
+  --richkit-active-bg: color-mix(in srgb, var(--accent) 16%, var(--richkit-bg));
+  --richkit-radius: 14px;
+  --richkit-sticky-top: 60px;
+  box-shadow: var(--shadow);
+}
+
+.output {
+  margin-top: 16px;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.output summary {
+  width: fit-content;
+  cursor: pointer;
+}
+
+.output pre {
+  max-height: 220px;
+  margin: 10px 0 0;
+  padding: 14px 16px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--surface);
+  color: var(--ink);
+  font-size: 12.5px;
+  line-height: 1.55;
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow: auto;
+}
+
+/* ---------- Sections ---------- */
+
+.section {
+  padding: 88px 0;
+  border-top: 1px solid var(--line);
+}
+
+.section h2,
+.closing h2 {
+  max-width: 20ch;
+  font-size: clamp(30px, 4.6vw, 48px);
+}
+
+.section .lead {
+  margin-top: 16px;
+}
+
+.features {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 1px;
+  margin: 48px 0 0;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--line);
+  list-style: none;
+  overflow: hidden;
+}
+
+.features li {
+  padding: 26px 24px 28px;
+  background: var(--surface);
+}
+
+.features code {
+  display: inline-block;
+  padding: 3px 8px;
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+  color: var(--accent);
+  font-size: 12px;
+  transition:
+    color 0.2s,
+    background-color 0.2s;
+}
+
+.features h3 {
+  margin-top: 16px;
+  font-size: 19px;
+  letter-spacing: -0.01em;
+}
+
+.features p {
+  margin-top: 8px;
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1.55;
+}
+
+/* ---------- AI section ---------- */
+
+.ai-grid {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  align-items: start;
+  gap: 40px;
+  margin-top: 44px;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.chips li {
+  padding: 7px 14px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface);
+  font-size: 15px;
+}
+
+.ai-copy {
+  margin-top: 24px;
+  color: var(--muted);
+}
+
+.keybox {
+  display: grid;
+  gap: 14px;
+  padding: 26px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--surface);
+}
+
+.keybox h3 {
+  font-size: 21px;
+}
+
+.keybox p {
+  color: var(--muted);
+  font-size: 15px;
+}
+
+.keybox label {
+  display: grid;
+  gap: 6px;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.keybox input,
+.keybox select {
+  width: 100%;
+  height: 42px;
+  padding: 0 12px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--bg);
+  color: var(--ink);
+  font: inherit;
+  font-size: 15px;
+  font-weight: 400;
+  letter-spacing: 0;
+}
+
+.keybox-status[data-ready] {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+/* ---------- Code ---------- */
+
+.code {
+  margin-top: 44px;
+  border-radius: 16px;
+  background: var(--code-bg);
+  color: var(--code-ink);
+  overflow: hidden;
+}
+
+.code-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 12px 0 12px;
+}
+
+.tabs {
+  display: flex;
+  gap: 4px;
+}
+
+.tabs button {
+  height: 36px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: color-mix(in srgb, var(--code-ink) 62%, transparent);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.tabs button:hover {
+  color: var(--code-ink);
+}
+
+.tabs button[aria-selected="true"] {
+  background: color-mix(in srgb, var(--code-ink) 14%, transparent);
+  color: var(--code-ink);
+}
+
+.code .copy {
+  background: color-mix(in srgb, var(--code-ink) 14%, transparent);
+  color: var(--code-ink);
+}
+
+.code .copy:hover {
+  background: color-mix(in srgb, var(--code-ink) 24%, transparent);
+}
+
+.code pre {
+  min-height: 330px;
+  margin: 0;
+  padding: 20px 24px 26px;
+  font-size: 14px;
+  line-height: 1.65;
+  overflow-x: auto;
+}
+
+.theming {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  gap: 32px;
+  margin-top: 28px;
+  padding: 28px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--surface);
+}
+
+.theming h3 {
+  font-size: 22px;
+}
+
+.theming p {
+  margin-top: 10px;
+  color: var(--muted);
+  font-size: 16px;
+}
+
+.theming pre {
+  margin: 0;
+  padding: 18px 20px;
+  border-radius: 12px;
+  background: var(--sunken);
+  font-size: 14px;
+  line-height: 1.7;
+  overflow-x: auto;
+}
+
+/* ---------- Props ---------- */
+
+.table-scroll {
+  margin-top: 40px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--surface);
+  overflow-x: auto;
+}
+
+.props {
+  width: 100%;
+  min-width: 640px;
+  border-collapse: collapse;
+  font-size: 15px;
+  text-align: left;
+}
+
+.props th,
+.props td {
+  padding: 13px 20px;
+  border-bottom: 1px solid var(--line);
+  vertical-align: top;
+}
+
+.props tbody tr:last-child > * {
+  border-bottom: 0;
+}
+
+.props thead th {
+  color: var(--muted);
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.props code {
+  font-size: 13px;
+}
+
+.props th[scope="row"] {
+  font-weight: 400;
+  white-space: nowrap;
+}
+
+.props th[scope="row"] code {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.props td:nth-child(2) {
+  color: var(--muted);
+}
+
+/* ---------- Closing and footer ---------- */
+
+.closing {
+  padding: 96px 0;
+  border-top: 1px solid var(--line);
+  background: var(--sunken);
+}
+
+.closing .wrap {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 28px;
+}
+
+.footer {
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.footer-inner {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px 24px;
+  padding-top: 26px;
+  padding-bottom: 30px;
+}
+
+/* ---------- Small screens ---------- */
+
+@media (max-width: 720px) {
+  body {
+    font-size: 16px;
+  }
+
+  .wrap {
+    padding: 0 16px;
+  }
+
+  .nav nav {
+    display: none;
+  }
+
+  .nav-inner {
+    justify-content: space-between;
+  }
+
+  .hero {
+    padding: 56px 0 36px;
+  }
+
+  .lead {
+    font-size: 17px;
+  }
+
+  .section,
+  .closing {
+    padding: 64px 0;
+  }
+
+  .theming {
+    grid-template-columns: 1fr;
+    padding: 20px;
+  }
+
+  .ai-grid {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+
+  .keybox {
+    padding: 20px;
+  }
+
+  .code pre {
+    min-height: 0;
+    padding: 16px;
+    font-size: 13px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  * {
+    transition: none !important;
+  }
+}
