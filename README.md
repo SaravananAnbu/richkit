@@ -2,6 +2,8 @@
 
 A drop-in rich text editor React component. Works in Vite, Next.js (App Router and Pages Router) and any React 18+ app. MIT licensed.
 
+**[Live demo and docs](https://saravanananbu.github.io/richkit/)** · [npm](https://www.npmjs.com/package/richkit)
+
 - One component, one stylesheet
 - Headings, lists, task lists, tables with resizable columns, images, links, code blocks
 - Text colour, highlight, alignment, and a floating format bar on selection
@@ -193,7 +195,7 @@ The example apps in `examples/vite` and `examples/next` install the packed tarba
 
 ### Landing page
 
-`site/` is a static landing page with a live demo of the editor.
+`site/` is a static landing page with a live demo of the editor, published at https://saravanananbu.github.io/richkit/. It installs richkit from npm, so it shows the latest published version rather than local changes. Pushing a change under `site/` to `main` redeploys it through `.github/workflows/pages.yml`.
 
 ```bash
 npm --prefix site run dev     # local preview

@@ -1,4 +1,5 @@
-// Builds the library, packs it, and reinstalls the fresh tarball into every example app and the landing page.
+// Builds the library, packs it, and reinstalls the fresh tarball into every example app.
+// The landing page (site/) installs the published package from npm instead, so it is not touched here.
 import { execSync } from "node:child_process";
 import { existsSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { relative } from "node:path";
@@ -14,7 +15,7 @@ run("npm pack");
 
 const { version } = JSON.parse(readFileSync("package.json", "utf8"));
 const tarball = `richkit-${version}.tgz`;
-const apps = [...readdirSync("examples").map((name) => `examples/${name}`), "site"];
+const apps = readdirSync("examples").map((name) => `examples/${name}`);
 
 for (const dir of apps) {
   const manifest = `${dir}/package.json`;
