@@ -1,6 +1,6 @@
 {
   "name": "richkit",
-  "version": "0.2.1",
+  "version": "0.2.3",
   "description": "A drop-in rich text editor React component with a built-in AI assistant, for Vite, Next.js and any React app.",
   "license": "MIT",
   "repository": {
@@ -43,6 +43,16 @@
         "default": "./dist/index.cjs"
       }
     },
+    "./server": {
+      "import": {
+        "types": "./dist/server.d.ts",
+        "default": "./dist/server.js"
+      },
+      "require": {
+        "types": "./dist/server.d.cts",
+        "default": "./dist/server.cjs"
+      }
+    },
     "./styles.css": "./dist/styles.css",
     "./package.json": "./package.json"
   },
@@ -50,7 +60,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsup && node scripts/copy-css.mjs",
+    "build": "node scripts/clean.mjs && tsup && node scripts/copy-css.mjs",
     "dev": "tsup --watch",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",

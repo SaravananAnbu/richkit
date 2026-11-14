@@ -132,14 +132,56 @@ Set the `ai` prop and the editor gains an **AI** button in the toolbar and the s
 
 `complete` may return a `Response`, a `ReadableStream`, an async iterable of strings, or a plain string. Whatever text it yields should be an HTML fragment.
 
-On the server, `buildAIPrompt` gives you the same prompts the built-in providers use:
+### Keeping your own key in a server env variable
+
+A key read from a frontend env variable (`VITE_*` in Vite, `NEXT_PUBLIC_*` in Next.js) is copied into the JavaScript every visitor downloads, so it is not secret. Use those only for local development.
+
+For a key that belongs to you, keep it in a server-only env variable and point `complete` at your own route. `richkit/server` exports the prompt helpers without any React or editor code, so it is safe to import on a server:
 
 ```ts
-import { buildAIPrompt } from "richkit";
+// app/api/ai/route.ts (Next.js). Set ANTHROPIC_API_KEY in .env.local
+import Anthropic from "@anthropic-ai/sdk";
+import { buildAIPrompt } from "richkit/server";
 
-const { system, user } = buildAIPrompt({ action, prompt, selection, document });
-// send `system` and `user` to any model, and stream its text back
+const client = new Anthropic(); // reads ANTHROPIC_API_KEY on the server
+
+export async function POST(req: Request) {
+  const { system, user } = buildAIPrompt(await req.json());
+
+  const stream = client.messages.stream({
+    model: "claude-opus-5-5",
+    max_tokens: 64000,
+    system,
+    messages: [{ role: "user", content: user }],
+  });
+
+  const encoder = new TextEncoder();
+  const body = new ReadableStream({
+    start(controller) {
+      stream.on("text", (text) => controller.enqueue(encoder.encode(text)));
+      stream.on("end", () => controller.close());
+      stream.on("error", (err) => controller.error(err));
+    },
+    cancel() {
+      stream.abort();
+    },
+  });
+
+  return new Response(body, { headers: { "Content-Type": "text/plain; charset=utf-8" } });
+}
 ```
+
+The editor side is the `complete` example above, calling `/api/ai`. The same pattern works with any provider: send `system` and `user` to the model and stream its text back.
+
+- Import `buildAIPrompt` from `richkit/server` in server code. The main `richkit` entry is a Client Component module, and Next.js will not let a server route call functions from it.
+- A route like this lets anyone who can reach it spend your AI budget. Put it behind your app's sign-in and add a rate limit before going live.
+- A Vite app has no server of its own, so it needs a small backend or a serverless function for this.
+
+| Where the key lives | Safe? | Use for |
+| --- | --- | --- |
+| `VITE_*` / `NEXT_PUBLIC_*` env variable | No, visible to every visitor | Local development only |
+| Typed in by the user | Yes, it is their own key | Demos, personal tools |
+| Server env variable + `complete` | Yes | Production apps |
 
 ### Safety
 
