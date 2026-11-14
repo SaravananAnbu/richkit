@@ -417,19 +417,150 @@ h1 em {
 
 /* ---------- AI section ---------- */
 
-.ai-grid {
+.ai-flow {
   display: grid;
-  grid-template-columns: 1.1fr 1fr;
-  align-items: start;
-  gap: 40px;
-  margin-top: 44px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+  margin: 44px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ai-step {
+  position: relative;
+  padding: 20px 20px 24px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--surface);
+}
+
+/* Arrow between steps */
+.ai-step + .ai-step::before {
+  content: "→";
+  position: absolute;
+  top: 78px;
+  left: -21px;
+  width: 22px;
+  color: var(--accent);
+  font-size: 20px;
+  line-height: 1;
+  text-align: center;
+}
+
+.ai-mock {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 12px;
+  height: 132px;
+  padding: 16px;
+  border-radius: 10px;
+  background: var(--sunken);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.mock-sel {
+  border-radius: 3px;
+  background: color-mix(in srgb, var(--accent) 24%, transparent);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 24%, transparent);
+}
+
+.mock-chips,
+.mock-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.mock-chips span,
+.mock-actions span {
+  padding: 3px 10px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface);
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.mock-actions span {
+  border-radius: 7px;
+  padding: 5px 10px;
+}
+
+.mock-chips span[data-on],
+.mock-actions span[data-on] {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--on-accent);
+  font-weight: 700;
+}
+
+.mock-label {
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.mock-preview {
+  padding: 10px 12px;
+  border: 1px dashed color-mix(in srgb, var(--accent) 55%, var(--line));
+  border-radius: 8px;
+  background: var(--surface);
+}
+
+.mock-caret {
+  display: inline-block;
+  width: 2px;
+  height: 1em;
+  margin-left: 2px;
+  background: var(--accent);
+  vertical-align: text-bottom;
+  animation: mock-blink 1s steps(2, start) infinite;
+}
+
+@keyframes mock-blink {
+  to {
+    visibility: hidden;
+  }
+}
+
+.mock-undo {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.ai-num {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  margin-top: 20px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--accent) 14%, transparent);
+  color: var(--accent);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.ai-step h3 {
+  margin-top: 12px;
+  font-size: 19px;
+}
+
+.ai-step > p {
+  margin-top: 6px;
+  color: var(--muted);
+  font-size: 15px;
 }
 
 .chips {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  margin: 0;
+  margin: 36px 0 0;
   padding: 0;
   list-style: none;
 }
@@ -443,55 +574,9 @@ h1 em {
 }
 
 .ai-copy {
-  margin-top: 24px;
+  max-width: 68ch;
+  margin-top: 20px;
   color: var(--muted);
-}
-
-.keybox {
-  display: grid;
-  gap: 14px;
-  padding: 26px;
-  border: 1px solid var(--line);
-  border-radius: 16px;
-  background: var(--surface);
-}
-
-.keybox h3 {
-  font-size: 21px;
-}
-
-.keybox p {
-  color: var(--muted);
-  font-size: 15px;
-}
-
-.keybox label {
-  display: grid;
-  gap: 6px;
-  color: var(--muted);
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: 0.04em;
-}
-
-.keybox input,
-.keybox select {
-  width: 100%;
-  height: 42px;
-  padding: 0 12px;
-  border: 1px solid var(--line);
-  border-radius: 10px;
-  background: var(--bg);
-  color: var(--ink);
-  font: inherit;
-  font-size: 15px;
-  font-weight: 400;
-  letter-spacing: 0;
-}
-
-.keybox-status[data-ready] {
-  color: var(--accent);
-  font-weight: 700;
 }
 
 /* ---------- Code ---------- */
@@ -711,13 +796,16 @@ h1 em {
     padding: 20px;
   }
 
-  .ai-grid {
+  .ai-flow {
     grid-template-columns: 1fr;
-    gap: 28px;
+    gap: 32px;
   }
 
-  .keybox {
-    padding: 20px;
+  .ai-step + .ai-step::before {
+    content: "↓";
+    top: -27px;
+    left: 50%;
+    margin-left: -11px;
   }
 
   .code pre {
@@ -734,5 +822,9 @@ h1 em {
 
   * {
     transition: none !important;
+  }
+
+  .mock-caret {
+    animation: none;
   }
 }

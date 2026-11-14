@@ -1,5 +1,5 @@
 import { useEffect, useState, type CSSProperties, type ReactNode } from "react";
-import { RichTextEditor, type AIConfig } from "richkit";
+import { RichTextEditor } from "richkit";
 
 const ACCENTS = [
   { name: "Vermilion", light: "#d9480f", dark: "#ff8a5b" },
@@ -23,14 +23,6 @@ const DEMO_CONTENT = `
 </tbody></table>
 <blockquote><p>Everything you type stays in this page. Nothing is sent anywhere.</p></blockquote>
 `;
-
-const PROVIDERS = [
-  { id: "claude", name: "Claude", modelHint: "claude-opus-5-5 (default)", modelRequired: false },
-  { id: "openai", name: "OpenAI", modelHint: "Model id (required)", modelRequired: true },
-  { id: "gemini", name: "Gemini", modelHint: "Model id (required)", modelRequired: true },
-] as const;
-
-type ProviderId = (typeof PROVIDERS)[number]["id"];
 
 const AI_ACTIONS = [
   "Improve writing",
@@ -214,20 +206,6 @@ export function App() {
   const [accent, setAccent] = useState(0);
   const [html, setHtml] = useState(DEMO_CONTENT);
   const [tab, setTab] = useState<keyof typeof SNIPPETS>("Vite");
-  const [provider, setProvider] = useState<ProviderId>("claude");
-  const [apiKey, setApiKey] = useState("");
-  const [model, setModel] = useState("");
-
-  // The key lives only in this component's state: never stored, logged or sent anywhere but the chosen provider.
-  const providerInfo = PROVIDERS.find((p) => p.id === provider)!;
-  const key = apiKey.trim();
-  const modelId = model.trim();
-  const aiReady = key.length > 0 && (!providerInfo.modelRequired || modelId.length > 0);
-  const ai: AIConfig | undefined = !aiReady
-    ? undefined
-    : provider === "claude"
-      ? { provider, apiKey: key, model: modelId || undefined }
-      : { provider, apiKey: key, model: modelId };
 
   useEffect(() => {
     document.documentElement.dataset.theme = dark ? "dark" : "light";
@@ -312,7 +290,6 @@ export function App() {
               value={html}
               onChange={setHtml}
               onImageUpload={localPreview}
-              ai={ai}
               theme={dark ? "dark" : "light"}
               placeholder="Write something…"
               minHeight={320}
@@ -332,75 +309,58 @@ export function App() {
           title="An AI assistant that asks before it edits."
           lead="Select text and pick an action, or type what you want. The answer streams into a preview, and nothing in the document changes until the writer accepts it. One undo takes it back."
         >
-          <div className="ai-grid">
-            <div>
-              <ul className="chips">
-                {AI_ACTIONS.map((action) => (
-                  <li key={action}>{action}</li>
-                ))}
-              </ul>
-              <p className="ai-copy">
-                Works with Claude, OpenAI and Gemini using the reader's own key, or with any model through one function
-                that calls your backend. Model output is cleaned before it is shown or inserted.
-              </p>
-            </div>
-            <form className="keybox" onSubmit={(e) => e.preventDefault()}>
-              <h3>Try it in the demo above</h3>
-              <p>
-                Add your own API key and an <strong>AI</strong> button appears in the demo's toolbar. The key stays in
-                this tab's memory and goes only to the provider you pick. Reloading the page clears it.
-              </p>
-              <label>
-                Provider
-                <select
-                  value={provider}
-                  onChange={(e) => {
-                    setProvider(e.target.value as ProviderId);
-                    setModel("");
-                  }}
-                >
-                  {PROVIDERS.map((p) => (
-                    <option key={p.id} value={p.id}>
-                      {p.name}
-                    </option>
-                  ))}
-                </select>
-              </label>
-              <label>
-                API key
-                <input
-                  type="password"
-                  autoComplete="off"
-                  spellCheck={false}
-                  placeholder="Paste your key"
-                  value={apiKey}
-                  onChange={(e) => setApiKey(e.target.value)}
-                />
-              </label>
-              <label>
-                Model
-                <input
-                  type="text"
-                  autoComplete="off"
-                  spellCheck={false}
-                  placeholder={providerInfo.modelHint}
-                  value={model}
-                  onChange={(e) => setModel(e.target.value)}
-                />
-              </label>
-              <p className="keybox-status" role="status" data-ready={aiReady ? "" : undefined}>
-                {aiReady ? (
-                  <>
-                    AI is on. <a href="#demo">Go to the demo</a> and press the AI button.
-                  </>
-                ) : key && providerInfo.modelRequired ? (
-                  "Enter a model id to turn AI on."
-                ) : (
-                  "AI is off until you add a key."
-                )}
-              </p>
-            </form>
-          </div>
+          <ol className="ai-flow">
+            <li className="ai-step">
+              <div className="ai-mock" aria-hidden="true">
+                <p className="mock-text">
+                  Our launch went <span className="mock-sel">really very good and lots of people came</span>.
+                </p>
+                <div className="mock-chips">
+                  <span data-on="">Improve writing</span>
+                  <span>Shorten</span>
+                  <span>Translate</span>
+                </div>
+              </div>
+              <span className="ai-num">1</span>
+              <h3>Select and ask</h3>
+              <p>Highlight some text and pick an action, or type an instruction in your own words.</p>
+            </li>
+            <li className="ai-step">
+              <div className="ai-mock" aria-hidden="true">
+                <p className="mock-label">Preview</p>
+                <p className="mock-preview">
+                  the launch was a success, with strong turnout
+                  <span className="mock-caret" />
+                </p>
+              </div>
+              <span className="ai-num">2</span>
+              <h3>Preview the answer</h3>
+              <p>The suggestion streams into a preview panel. The document itself is untouched.</p>
+            </li>
+            <li className="ai-step">
+              <div className="ai-mock" aria-hidden="true">
+                <div className="mock-actions">
+                  <span data-on="">Replace selection</span>
+                  <span>Try again</span>
+                  <span>Discard</span>
+                </div>
+                <p className="mock-undo">Undo brings the original back</p>
+              </div>
+              <span className="ai-num">3</span>
+              <h3>Accept or discard</h3>
+              <p>Nothing changes until the writer accepts it, and a single undo reverts the edit.</p>
+            </li>
+          </ol>
+          <ul className="chips">
+            {AI_ACTIONS.map((action) => (
+              <li key={action}>{action}</li>
+            ))}
+          </ul>
+          <p className="ai-copy">
+            Works with Claude, OpenAI and Gemini using the writer's own key, or with any model through one function
+            that calls your backend, so your key stays on your server. Model output is cleaned before it is shown or
+            inserted.
+          </p>
         </Section>
 
         <Section
