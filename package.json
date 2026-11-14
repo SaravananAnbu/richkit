@@ -1,6 +1,6 @@
 {
   "name": "richkit",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "A drop-in rich text editor React component with a built-in AI assistant, for Vite, Next.js and any React app.",
   "license": "MIT",
   "repository": {

@@ -10,7 +10,7 @@
     "next": "latest",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "richkit": "file:../../richkit-0.2.3.tgz"
+    "richkit": "file:../../richkit-0.2.4.tgz"
   },
   "devDependencies": {
     "@types/node": "^24.0.0",
